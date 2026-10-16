@@ -29,7 +29,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
-	bootstrapv1alpha3 "github.com/siderolabs/cluster-api-bootstrap-provider-talos/api/v1alpha3"
 	"github.com/siderolabs/cluster-api-bootstrap-provider-talos/controllers"
 	// +kubebuilder:scaffold:imports
 )
@@ -161,16 +160,9 @@ func setupReconcilers(ctx context.Context, mgr manager.Manager) {
 	}
 }
 
-func setupWebhooks(mgr manager.Manager) {
-	if err := (&bootstrapv1alpha3.TalosConfigTemplate{}).SetupWebhookWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create webhook", "webhook", "TalosConfigTemplate")
-		os.Exit(1)
-	}
-	if err := (&bootstrapv1alpha3.TalosConfig{}).SetupWebhookWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create webhook", "webhook", "TalosConfig")
-		os.Exit(1)
-	}
-}
+// setupWebhooks is a no-op: this fork removes the API package webhooks so the
+// types can be imported alongside controller-runtime >= 0.23. Do not deploy it.
+func setupWebhooks(_ manager.Manager) {}
 
 func setupChecks(mgr ctrl.Manager) {
 	if err := mgr.AddReadyzCheck("webhook", mgr.GetWebhookServer().StartedChecker()); err != nil {

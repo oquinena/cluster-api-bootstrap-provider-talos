@@ -35,7 +35,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
-	bootstrapv1alpha3 "github.com/siderolabs/cluster-api-bootstrap-provider-talos/api/v1alpha3"
 	"github.com/siderolabs/cluster-api-bootstrap-provider-talos/controllers"
 	// +kubebuilder:scaffold:imports
 )
@@ -97,12 +96,6 @@ func setupSuite(t *testing.T) (context.Context, client.Client) {
 		Log:    ctrl.Log.WithName(t.Name()),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(ctx, mgr, controller.Options{MaxConcurrentReconciles: 10})
-	require.NoError(t, err)
-
-	err = (&bootstrapv1alpha3.TalosConfigTemplate{}).SetupWebhookWithManager(mgr)
-	require.NoError(t, err)
-
-	err = (&bootstrapv1alpha3.TalosConfig{}).SetupWebhookWithManager(mgr)
 	require.NoError(t, err)
 
 	go func() {
